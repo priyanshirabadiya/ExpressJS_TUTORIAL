@@ -1,43 +1,45 @@
-// Create server
-
-console.log("Hello World");
-
-const express = require('express');
-const app = express();
-app.get('/' , (req,res) => {
-    res.setHeader('Content-type' , 'text/html');
-    res.write('<h1>This is home page.</h1>');
-    res.end();
-})
-
-app.listen(5555,() => {
-    console.log('Server at http://localhost:5555');
-})
+// CRUD OPERATION / get and send methods
 
 const express = require('express');
 const server = express();
 
+
+const fs = require('fs');
+const data = fs.readFileSync('./dummy.js' , 'utf-8');
+
+// POST , GET , PUT , PATCH , DELETE method
+
 server.get('/' , (req,res) => {
-    res.setHeader('Content-type' , 'text/html' );
-    res.write("<h1>This is home page.</h1>");
+    res.write("<h1>Hello this is home page</h1>");
     res.end();
-});
-
-server.get('/user' , (req,res) => {
-    res.setHeader('Content-type' , 'text/html' );
-    res.write("<h1>This is user page for checking nodemon.</h1>");
-    res.end();
-});
-
-server.listen(2222,() => {
-    console.log('server at http://127.0.0.1:2222');    
 })
 
+server.get('/about' , (req,res) => {
+    res.end("<h1>This is ABOUT page</h1>");
+})
 
+// POST METHOD
 
+server.post('/',(req,res) => {
+    res.send('<h1>POST method</h1>');    // send methods
+})
 
+// PUT / PATCH UPDATING METHOD
 
+server.put("/" , (req,res) => {
+    res.json({message:"Hello this is put method."});
+})
 
+server.patch("/" , (req,res) => {
+    res.status(400);   // default 200 for success 
+    res.json({message : "hello patch method is called."});
+})
 
+server.delete('/' , (req,res) => {
+    res.write(data);
+    res.end();  // must need to end()
+})
 
-
+server.listen(1111,() => {
+    console.log('Server start at http://localhost:1111');
+})
