@@ -1,157 +1,40 @@
-// --------Lec-4 error-handling middleware/router middleware/Built-in middleware-----
+// -------- Lecture-5  CRUD OPERATION in which create and read operation
 
-// -------------------------- Error handling middleware  -------------------------- 
+const express = require('express')
+const app = express();
+const users = require('./dummy.json');
+const morgan = require('morgan');
 
-// const express = require('express');
-// const server = express();
+app.use(morgan("short"));
+app.use(express.json());
+app.use(express.urlencoded({extended:false}))
 
-// server.use((err,req,res,next) => {
-//     console.error(err.stack);
-//     res.status(500).send("Somthing Broke..!")
+// CRUD operation
+// create user
+
+// app.get("/", (req,res)=> {
+//     // res.send("Welcome to express");
+//     // res.send(users);
+//     users.push(req.body);
+//     // res.json({message:"Successfully added..."});
+//     res.send(users);
 // })
 
-// server.get('/' , (req,res) => {
-//     res.send("Welcome to server");    
-// } )
+// READ - get all users
 
-// server.listen(1122,()=>{
-//     console.log('Server at http://localhost:1122');
+// app.get("/user",(req,res)=> {
+//     res.json(users);
 // })
 
+// Get only one user
 
-// const express = require('express');
-// const server = express();
-
-// // Define a route that intentionally triggers an error
-// server.get('/', (req, res, next) => {
-//     const err = new Error("Something went wrong!");
-//     next(err);
-// });
-
-// // Error-handling middleware
-// server.use("/",(err, req, res, next) => {
-//     // console.error(err);  // Log the error stack trace for debugging
-//     res.status(500).send("Something Broke..!");  // Send a 500 error response
-// });
-
-// // Start the server
-// server.listen(1122, () => {
-//     console.log('Server running at http://localhost:1122');
-// });
-
-
-// -------------------------- Route middleware -------------------------- 
-
-
-
-
-
-
-
-// -------------------------- Built-in middleware -------------------------- 
-
-// First type express.json()
-
-const express = require('express');
-const server = express();
-
-server.use(express.json());
-
-const myFun = (req,res,next) => {
-    console.log("Headers: ", req.headers); 
-    console.log(req.body);              
-    // set method post then select row and select json data and add json like this 
-    // {
-    //     "Fname" : "priyanshi",
-    //     "sname" : "R"
-    // }
-    next();
-}
-
-// server.get("/" ,(req,res) =>{
-//     res.write("Welcome to expressJS")
-//     res.end();
-// })
-
-
-// server.get("/login" , (req,res) =>{
-//     res.write("Welcome to LoginPage")
-//     res.end();
-// })
-
-server.post("/", myFun, (req,res) =>{
-    res.setHeader('Content-type', "application/json"  )
-    res.write("Welcome to expressJS post ")
-    res.end();
+app.get("/user/:id" , (req,res) => {
+    let id = +req.params.id;
+    let item = users.find((user) => user.id === id)
+    res.json(item);
 })
 
-server.listen(1122, () => {
-    console.log('Server running at http://localhost:1122');
-});
+app.listen(1000, () => {
+    console.log(" Server at  http://localhost:1000");
+})
 
-// Second type urlencoded
-
-
-// const express = require('express');
-// const server = express();
-
-// server.use(express.urlencoded({extended:false}));
-
-// const myFun = (req,res,next) => {
-//     console.log(req.body);              
-//     next();
-// }
-
-// server.get("/" ,(req,res) =>{
-//     res.write("Welcome to expressJS")
-//     res.end();
-// })
-
-// server.get("/login",myFun ,(req,res) =>{
-//     res.write("Welcome to loginPAGE.")
-//     res.end();
-// })
-
-// server.post("/", (req,res) =>{
-//     res.setHeader('Content-type', "application/json" )
-//     res.write("Welcome to expressJS post ")
-//     res.end();
-// })
-
-// server.listen(1122, () => {
-//     console.log('Server running at http://localhost:1122');
-// });
-
-
-
-// static express
-// const express = require('express');
-// const server = express();
-
-// // server.use(express.urlencoded({extended:false}));
-// server.use("/hello",express.static('public'));   // create folder named public then  create one file in that folder and apply routes in url
-
-// const myFun = (req,res,next) => {
-//     console.log(req.body);              
-//     next();
-// }
-
-// server.get("/" ,(req,res) =>{
-//     res.write("Welcome to expressJS")
-//     res.end();
-// })
-
-// server.get("/login",myFun ,(req,res) =>{
-//     res.write("Welcome to loginPAGE.")
-//     res.end();
-// })
-
-// server.post("/", (req,res) =>{
-//     res.setHeader('Content-type', "application/json" )
-//     res.write("Welcome to expressJS post ")
-//     res.end();
-// })
-
-// server.listen(1122, () => {
-//     console.log('Server running at http://localhost:1122');
-// });
