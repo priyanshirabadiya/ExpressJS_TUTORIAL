@@ -1,95 +1,157 @@
-// Middlewares
+// --------Lec-4 error-handling middleware/router middleware/Built-in middleware-----
+
+// -------------------------- Error handling middleware  -------------------------- 
+
+// const express = require('express');
+// const server = express();
+
+// server.use((err,req,res,next) => {
+//     console.error(err.stack);
+//     res.status(500).send("Somthing Broke..!")
+// })
+
+// server.get('/' , (req,res) => {
+//     res.send("Welcome to server");    
+// } )
+
+// server.listen(1122,()=>{
+//     console.log('Server at http://localhost:1122');
+// })
+
+
+// const express = require('express');
+// const server = express();
+
+// // Define a route that intentionally triggers an error
+// server.get('/', (req, res, next) => {
+//     const err = new Error("Something went wrong!");
+//     next(err);
+// });
+
+// // Error-handling middleware
+// server.use("/",(err, req, res, next) => {
+//     // console.error(err);  // Log the error stack trace for debugging
+//     res.status(500).send("Something Broke..!");  // Send a 500 error response
+// });
+
+// // Start the server
+// server.listen(1122, () => {
+//     console.log('Server running at http://localhost:1122');
+// });
+
+
+// -------------------------- Route middleware -------------------------- 
+
+
+
+
+
+
+
+// -------------------------- Built-in middleware -------------------------- 
+
+// First type express.json()
 
 const express = require('express');
 const server = express();
 
-// Application level middleware 
+server.use(express.json());
 
-const muFun = (req, res, next) => {
-    if (req.query.age >= '18') {
-        console.log('Success');
-        next();
-    }
-    else {
-        res.json({ message: "Sorry there is an issue..." });
-    }
+const myFun = (req,res,next) => {
+    console.log("Headers: ", req.headers); 
+    console.log(req.body);              
+    // set method post then select row and select json data and add json like this 
+    // {
+    //     "Fname" : "priyanshi",
+    //     "sname" : "R"
+    // }
+    next();
 }
 
-server.use(muFun);   // application
+// server.get("/" ,(req,res) =>{
+//     res.write("Welcome to expressJS")
+//     res.end();
+// })
 
-server.use("/", (req,res,next) => {
-    console.log('Time:' , Date.now());
-    res.send("Success");
-    next();
-})
-// ---------------------------------------------------------------------------
-// add this kind of url : http://localhost:3001/user/1
 
-server.use('/user/:id' , (req,res,next) => {
-    // console.log('Request type:' , req.method);  // Request type : GET
-    // console.log('original url:' , req.originalUrl); // original url :  /user/1   
-    console.log('ID:',req.params.id);  // ID:8
-    next();
-})
+// server.get("/login" , (req,res) =>{
+//     res.write("Welcome to LoginPage")
+//     res.end();
+// })
 
-server.get("/user/:id" , (req,res) => {
-    res.setHeader("Content-type" , "text/html" );
-    res.write("<h1>This is another path</h1>")
-    res.end();
-    // res.send(req.params.id);  // print 8 in output
-})
-
-server.get("/" , (req,res) => {
-    console.log("Welcom page.");
-    res.setHeader("Content-type" , "text/html" );
-    res.write("<h1>Hello welcome after calling application server.</h1>")
+server.post("/", myFun, (req,res) =>{
+    res.setHeader('Content-type', "application/json"  )
+    res.write("Welcome to expressJS post ")
     res.end();
 })
 
-// ---------------------------------------------------------------------------
+server.listen(1122, () => {
+    console.log('Server running at http://localhost:1122');
+});
 
-server.get("/user/:id" , (req,res,next) => {
-    // if the user ID is 0, skip to the next route
-    if(req.params.id === '0') next('route')
-    // otherwise pass the control to the next middleware function in this stack
-    else next();
-},
-(req,res,next) => {
-    res.send("regular");
-})
-
-server.get('/user/:id' , (req,res,next) => {
-    res.send('Special');
-})
-
-// ---------------------------------------------------------------------------
-// Middleware can also be declared in an array for reusability.
-
-function logOriginalUrl(req,res,next){
-    console.log("Url is : " , req.originalUrl );
-    next();
-}
-
-function logMethod(req,res,next){
-    console.log('Method is : ' , req.method);
-    next();
-}
-
-const logStuff = [logOriginalUrl , logMethod];
-
-server.get("/user/:id" , logStuff , (req,res,next) => {
-    res.send("This is user information.");
-})
+// Second type urlencoded
 
 
+// const express = require('express');
+// const server = express();
 
-server.listen(3001, () => {
-    console.log('server strt at http://localhost:3001 ');
-})
+// server.use(express.urlencoded({extended:false}));
+
+// const myFun = (req,res,next) => {
+//     console.log(req.body);              
+//     next();
+// }
+
+// server.get("/" ,(req,res) =>{
+//     res.write("Welcome to expressJS")
+//     res.end();
+// })
+
+// server.get("/login",myFun ,(req,res) =>{
+//     res.write("Welcome to loginPAGE.")
+//     res.end();
+// })
+
+// server.post("/", (req,res) =>{
+//     res.setHeader('Content-type', "application/json" )
+//     res.write("Welcome to expressJS post ")
+//     res.end();
+// })
+
+// server.listen(1122, () => {
+//     console.log('Server running at http://localhost:1122');
+// });
 
 
 
+// static express
+// const express = require('express');
+// const server = express();
 
+// // server.use(express.urlencoded({extended:false}));
+// server.use("/hello",express.static('public'));   // create folder named public then  create one file in that folder and apply routes in url
 
+// const myFun = (req,res,next) => {
+//     console.log(req.body);              
+//     next();
+// }
 
+// server.get("/" ,(req,res) =>{
+//     res.write("Welcome to expressJS")
+//     res.end();
+// })
 
+// server.get("/login",myFun ,(req,res) =>{
+//     res.write("Welcome to loginPAGE.")
+//     res.end();
+// })
+
+// server.post("/", (req,res) =>{
+//     res.setHeader('Content-type', "application/json" )
+//     res.write("Welcome to expressJS post ")
+//     res.end();
+// })
+
+// server.listen(1122, () => {
+//     console.log('Server running at http://localhost:1122');
+// });
