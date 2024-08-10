@@ -1,40 +1,87 @@
-// -------- Lecture-5  CRUD OPERATION in which create and read operation
-
-const express = require('express')
-const app = express();
+// -------- Lecture-6 UDATE / DELETE crud operation in expressJS
 const users = require('./dummy.json');
+const express = require('express');
 const morgan = require('morgan');
+const server = express();
 
-app.use(morgan("short"));
-app.use(express.json());
-app.use(express.urlencoded({extended:false}))
+server.use(morgan('dev'));
+server.use(express.json());
+server.use(express.urlencoded({extended:false}));
 
-// CRUD operation
-// create user
+server.get("/" , (req,res) => {
+    // console.log('Welcom to expressJS');
+    // res.end("This is welcome page")
+    res.send(users);
+});
 
-// app.get("/", (req,res)=> {
-//     // res.send("Welcome to express");
-//     // res.send(users);
+// Create user / add user
+// server.post("/user" , (req,res) => {
 //     users.push(req.body);
-//     // res.json({message:"Successfully added..."});
-//     res.send(users);
+//     // res.json({message:"User added successfully..."})
+//     // res.json(users);
 // })
 
-// READ - get all users
 
-// app.get("/user",(req,res)=> {
+// Read data
+// get all user
+// server.get("/" , (req,res) => {
 //     res.json(users);
+// });
+
+// get single user
+
+// server.get("/user/:id" , (req,res)=>{
+//     let id = +req.params.id;
+//     let user = users.find((user) => user.id === id);
+//     res.json(user);
 // })
 
-// Get only one user
+// UPDATE DATA PUT method replace data
 
-app.get("/user/:id" , (req,res) => {
+// server.put("/user/:id" , (req,res) =>{
+//     let id = +req.params.id;
+//     let userIndex = users.findIndex((item) => item.id === id)
+//     users.splice(userIndex , 1 , req.body);
+//     res.json({message:"Replace data successfully..."})
+// })
+
+
+// PATCH DATA 
+
+// By using find method
+// server.patch("/user/:id" , (req,res) => {
+//     let id = +req.params.id;
+//     let usermain = users.find((user) => user.id === id);
+//     let userIndex = users.findIndex((user) => user.id === id);
+//     users.splice(userIndex,1,{...usermain , ...req.body});
+//     res.json({message:"Update data successfully..."});
+// })
+
+// By using findIndex method use this
+// server.patch("/user/:id" , (req,res) => {
+//     let id = +req.params.id;
+//     let userIndex = users.findIndex((item) => item.id === id);
+//     let usermain = users[userIndex];
+//     users.splice(userIndex,1,{...usermain , ...req.body});
+//     res.json({message:"Update data successfully..."});
+// })
+
+
+
+server.delete("/user/:id" , (req,res) => {
     let id = +req.params.id;
-    let item = users.find((user) => user.id === id)
-    res.json(item);
+    let userIndex = users.findIndex((user) => user.id === id);
+    users.splice(userIndex , 1);
+    res.json({message:"data deletes successfully..."})
+});
+
+server.listen(1122,() => {
+    console.log('Server http://localhost:1122');
 })
 
-app.listen(1000, () => {
-    console.log(" Server at  http://localhost:1000");
-})
+
+
+
+
+
 
