@@ -3,24 +3,12 @@ const userRoutes = express.Router();
 
 const {
     addNewuser,
-    getAlluser,
-    getSingleuser,
-    replaceUser,
-    updateUser,
-    deleteUser
+    getAlluser
 } = require('../controller/user.controller')
 
 userRoutes.get("/add", addNewuser);
-
-userRoutes.get("/", getAlluser);
-
-userRoutes.post("/:id", getSingleuser);
-
-userRoutes.put("/:id", replaceUser);
-
-userRoutes.patch("/:id", updateUser);
-
-userRoutes.delete("/:id" , deleteUser )
+// userRoutes.get("/", getAlluser);
 
 module.exports = userRoutes;
+
 
