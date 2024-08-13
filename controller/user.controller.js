@@ -1,35 +1,40 @@
-const products = require("../product.json");
+// const products = require("../product.json");
+const users = require('../dummy.json');
 
-exports.addNewproduct = (req,res) => {
-    // res.send("<h1>Hello this is home Page.</h1>");
-    products.push(req.body);
-    res.send(products);
-    // console.log(products);
-}    
-
-exports.getAllproducts = (req,res) => {
-    res.send(products);
-};
-
-exports.getSingleproduct = (req,res) => {
-    let id = +req.params.id;
-    let product = products.find((item) => item.id === id);
-    res.json(product);
+exports.addNewuser = (req,res) => {
+    users.push(req.body);
+    res.send(users);
 }
 
-exports.replaceProduct = (req,res)=>{
-    let id = +req.params.id;
-    let productIndex = products.findIndex((item) => item.id === id);
-    products.splice(productIndex,1,req.body);
-    res.json({message:"Replace data success.."});
+exports.getAlluser = (req,res) => {
+    res.send(users);
 }
 
-exports.updateProduct = (req,res) => {
+exports.getSingleuser = (req,res) => {
     let id = +req.params.id;
-    let productIndex = products.findIndex((item) => item.id  === id);
-    let mainproduct = products[productIndex];
-    products.splice(productIndex , 1 , {...mainproduct,...req.body});
-    res.json({message:"update data success.."});
+    let user = users.find((item) => item.id === id);
+    res.json(user);
 }
 
+exports.replaceUser = (req,res) => {
+    let id = +req.params.id;
+    let productIndex = users.findIndex((item) => item.id === id);
+    users.splice(productIndex,1,req.body);
+    res.json({message:"Replace data successfully..."});
+}
+
+exports.updateUser = (req,res) => {
+    let id = +req.params.id;
+    let userIndex = users.findIndex((item) => item.id === id);
+    let mainuser = users[userIndex];
+    users.splice(userIndex,1,{...mainuser,...req.body});
+    res.json({message:"Updata data successfully..."});
+}
+
+exports.deleteUser = (req,res) => {
+    let id = +req.params.id;
+    let userIndex = users.findIndex((item) => item.id === id);
+    users.splice(userIndex , 1);
+    res.json({message:"User deletes successfully..."});
+}
 
