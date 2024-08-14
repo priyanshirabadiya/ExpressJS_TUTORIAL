@@ -2,11 +2,11 @@ let mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     firstName : String, // Shorthand property
-    lastName : {
+    lastName : {        // Try to use long property more
         type : String ,
     },
     email : {
-        type : String
+        type : String,
     },
     age:{
         type : Number
