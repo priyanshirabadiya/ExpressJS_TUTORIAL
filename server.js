@@ -19,8 +19,19 @@ server.get("/" , (req,res) => {
     res.send("<h1>Welcome to server.</h1>");
 })
 
-server.use("/users" , userRoutes);
+server.use("/user" , userRoutes);
 
 server.listen(1111,() => {
     console.log('Start at  http://localhost:1111 ');
 })
+
+
+
+
+
+
+
+
+
+
+
