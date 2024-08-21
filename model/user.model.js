@@ -10,6 +10,12 @@ const userSchema = mongoose.Schema({
         unique : true,
         required: true
     },
+    password:{
+        type : String
+    },
+    mobileNo:{
+        type : String
+    },
     age:{
         type : Number
     },
