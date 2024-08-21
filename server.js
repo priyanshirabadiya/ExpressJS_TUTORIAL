@@ -1,28 +1,29 @@
 // ---------------------------- CONNECTING WITH DATABASE ----------------------------
+require('dotenv').config();
 const express = require("express");
 const server = express();
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const userRoutes = require("./routes/user.routes");
+const port = process.env.PORT;
 
-mongoose.connect("mongodb://127.0.0.1:27017/node5to7")
-        .then(()=>console.log('Database connection established success...'))
-        .catch((err)=>console.log(err));
-
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log('Database connection established success...'))
+    .catch((err) => console.log(err));
 
 // Middleware
 server.use(morgan('combined'));
 server.use(express.json());
-server.use(express.urlencoded({extended:false}));
-    
-server.get("/" , (req,res) => {
+server.use(express.urlencoded({ extended: false }));
+
+server.get("/", (req, res) => {
     res.send("<h1>Welcome to server.</h1>");
 })
 
-server.use("/user" , userRoutes);
+server.use("/user", userRoutes);
 
-server.listen(1111,() => {
-    console.log('Start at  http://localhost:1111 ');
+server.listen(port, () => {
+    console.log(`Start at  http://localhost:${port} `);
 })
 
 

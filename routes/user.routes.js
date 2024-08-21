@@ -8,7 +8,7 @@ const {
     getSingleuser,
     updateUser,
     deleteUser
-} = require('../controller/user.controller')
+} = require('../controller/user.controller');
 
 userRoutes.post("/add", addnewUser);
 
