@@ -3,29 +3,22 @@ const express = require('express');
 const userRoutes = express.Router();
 
 const {
-    // addnewUser,
-    // getAllusers,
-    // getSingleuser,
-    // updateUser,
-    // deleteUser,
     registerUser,
-    loginUser
+    loginUser,
+    getProfile,
+    deleteUser,
+    getAll
 } = require('../controller/user.controller');
 
-// userRoutes.post("/add", addnewUser);
+const {verifyToken} = require('../helpers/verifyToken')
 
-// userRoutes.get('/all',getAllusers);
-
-// userRoutes.get('/single',getSingleuser);
-
-// userRoutes.put('/update' , updateUser )
-
-// userRoutes.delete('/delete' , deleteUser )
+userRoutes.get("/all" , getAll );
 
 userRoutes.post("/register" , registerUser );
-userRoutes.post("/login" , loginUser );
 
+userRoutes.get("/login" , loginUser );
 
+userRoutes.get("/me" , verifyToken , getProfile)
 
 module.exports = userRoutes;
 
