@@ -17,15 +17,15 @@ exports.getAll = async (req, res) => {
 
 exports.registerUser = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.query.email, isDelete: false });
+        let user = await User.findOne({ email: req.body.email, isDelete: false });
         console.log(user);
         if (user) {
             return res.status(401).send({ user, message: "User already exist" });
         }
         let hashPassword = await bcrypt.hash(req.body.password, 10);
         user = await User.create({ ...req.body, password: hashPassword });
-
-        res.status(201).json({ user, message: "User added successfully..." });
+        let token = await jwt.sign({ userId: user._id }, process.env.JWT_SECREAT);
+        res.status(201).json({ user, message: "User added successfully...", token });
 
     } catch (err) {
         console.log(err);
@@ -35,11 +35,10 @@ exports.registerUser = async (req, res) => {
 
 exports.loginUser = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.body.email, isDelete: false })
+        let user = await User.findOne({ email: req.body.email, isDelete: false });
         if (!user) {
             res.send({ message: "User not found..." });
         }
-
         let comparepassword = await bcrypt.compare(req.body.password, user.password);
         if (!comparepassword) {
             res.send("Email or password is incorrect exist... ");
@@ -53,6 +52,25 @@ exports.loginUser = async (req, res) => {
     }
 }
 
+// ---------------------- main topic in this brance is update User ---------------------- 
+
+exports.updateProfile = async (req, res) => {
+    try {
+        let user = req.user;
+        user = await User.findByIdAndUpdate(
+            user._id,
+            { $set: req.body },
+            { new: true }
+        )
+        res.status(200).send("User update successfully...");
+    } catch (error) {
+        console.log(error);
+        res.send({ message: "Internal server error..." });
+    }
+}
+
+// ---------------------- main topic in this brance is update User ---------------------- 
+
 exports.getProfile = async (req, res) => {
     try {
         res.send("Welcome to user profile");
@@ -60,4 +78,21 @@ exports.getProfile = async (req, res) => {
         console.log(err);
     }
 }
+
+exports.deleteUser = async (req, res) => {
+    try {
+        let user = await User.findOne({ _id: req.query._id, isDelete: false })
+        if (!user) {
+            res.send("User not exists...");
+        }
+        user = await User.findByIdAndUpdate(user._id, { isDelete: true }, { new: true })
+        res.send("User deleted successfully...");
+    } catch (err) {
+        console.log(err);
+        res.send("Internal server error...");
+    }
+}
+
+
+
 

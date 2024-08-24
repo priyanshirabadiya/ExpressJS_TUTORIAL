@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/user.model');
 
-exports.verifyToken = async (req, res , next) => {
+exports.verifyToken = async (req, res, next) => {
     try {
         let authorization = req.headers['authorization'];
         // console.log(authorization);
-        if(!authorization){
+        if (!authorization) {
             return res.send("Not autorization");
         }
         let token = authorization.split(" ")[1];
@@ -22,4 +22,5 @@ exports.verifyToken = async (req, res , next) => {
         res.send("Internal server error...");
     }
 }
+
 
