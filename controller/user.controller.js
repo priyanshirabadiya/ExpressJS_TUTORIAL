@@ -69,7 +69,7 @@ exports.updateProfile = async (req, res) => {
     }
 }
 
-// ---------------------- main topic in this brance is update User ---------------------- 
+// --------------------------------------------------------------------------------------- 
 
 exports.getProfile = async (req, res) => {
     try {
