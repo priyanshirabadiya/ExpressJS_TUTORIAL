@@ -2,7 +2,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../model/user.model'); // database 
 const bcrypt = require('bcrypt');
-const { use } = require('../routes/user.routes');
 
 
 exports.getAll = async (req, res) => {
@@ -15,23 +14,36 @@ exports.getAll = async (req, res) => {
     }
 }
 
+
+// ----------------------- add file in images ----------------------- 
+
 exports.registerUser = async (req, res) => {
     try {
+        let imagePath = "";
         let user = await User.findOne({ email: req.body.email, isDelete: false });
         console.log(user);
         if (user) {
-            return res.status(401).send({ user, message: "User already exist" });
+            return res.status(401).send({ user, message: "User already exists" });
+        }
+        if(req.file){
+            console.log(req.file);
+            imagePath = req.file.path.replace(/\\/g , "/")
         }
         let hashPassword = await bcrypt.hash(req.body.password, 10);
-        user = await User.create({ ...req.body, password: hashPassword });
+        user = await User.create({
+            ...req.body,
+            password: hashPassword,
+            profileImage : imagePath
+        });
         let token = await jwt.sign({ userId: user._id }, process.env.JWT_SECREAT);
         res.status(201).json({ user, message: "User added successfully...", token });
-
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "Internal server error..." });
     }
 }
+
+// --------------------------------------------------------------------------------------------
 
 exports.loginUser = async (req, res) => {
     try {
@@ -52,8 +64,6 @@ exports.loginUser = async (req, res) => {
     }
 }
 
-// ---------------------- main topic in this brance is update User ---------------------- 
-
 exports.updateProfile = async (req, res) => {
     try {
         let user = req.user;
@@ -68,8 +78,6 @@ exports.updateProfile = async (req, res) => {
         res.send({ message: "Internal server error..." });
     }
 }
-
-// --------------------------------------------------------------------------------------- 
 
 exports.getProfile = async (req, res) => {
     try {
@@ -92,7 +100,3 @@ exports.deleteUser = async (req, res) => {
         res.send("Internal server error...");
     }
 }
-
-
-
-
