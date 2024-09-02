@@ -1,43 +1,90 @@
-const User = require('../model/user.model'); // database
+const User = require('../model/user.model');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
-exports.addNewuser = async (req, res) => {
+// exports.addUser = async (req, res) => {
+//     try {
+//         let user = await User.findOne({ email: req.body.email, isDelete: false });
+//         if (user) {
+//             res.send("User already exist...");
+//         }
+//         user = await User.create(req.body);
+//         res.send({ user, message: "User added succesfully..." });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send("internal server error...");
+//     }
+// }
+
+exports.getallUsers = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.body.email });
+        let users = await User.find({ isDelete: false });
+        res.send(users);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("internal server error...");
+    }
+}
+
+exports.registerUser = async (req, res) => {
+    try {
+        let user = await User.findOne({ email: req.body.email, isDelete: false });
         if (user) {
-            return res.status(400).json({ message: "User already exist..." });
+            res.send("User already exist...");
         }
-        const adduser = await User.create(req.body);
-        res.status(200).json({ adduser, message: "User added successfully..." });
-    }
-    catch (err) {
+        let hashpass = await bcrypt.hash(req.body.password, 10);
+        user = await User.create({ ...req.body, password: hashpass });
+        res.send({ user, message: "User added succesfully..." });
+    } catch (err) {
         console.log(err);
-        res.status(500).json({ "message": "Sorry can't set data." });
+        res.status(500).send("internal server error...");
     }
 }
 
-exports.getAllusers = async (req, res) => {
-    try {
-        const users = await User.find();
-        res.status(200).json(users);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({ message: "Internal server error..." });
-    }
-}
 
-exports.getSingleuser = async (req, res) => {
+exports.loginUser = async (req, res) => {
     try {
-        const user = await User.findOne({ firstName: req.query.firstName }); // give perticular name in object for find string data
-        // const user = await User.findOne({ _id: req.query._userId }); // _userId : give this name as per key name  
-        // const user = await User.findById(req.query.userId);  // only findById is allow direct use req.query.userId 
+        let user = await User.findOne({ email: req.body.email, isDelete: false });
         if (!user) {
-            return res.status(404).json({ message: "User not found..." });
+            res.send({ message: "User not found..." });
         }
-        res.status(200).json(user);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({ message: "Internal server error..." });
+        let comparepassword = await bcrypt.compare(req.body.password, user.password);
+        if (!comparepassword) {
+            res.send("Email or password is incorrect... ");
+        }
+        // Creating token for reach home page.
+        let token = await jwt.sign({ userId: user._id }, process.env.JWT_SECRETE);
+        res.json({ message: "User login success...", token });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Internal server error ..." });
     }
 }
+
+exports.updateUser = async (req, res) => {
+    try {
+        let user = req.user;
+        user = await User.findByIdAndUpdate(
+            user._id,
+            { $set: req.body },
+            { new: true }
+        )
+        if (!user) {
+            return res.send("User not found...");
+        }
+        res.json({ message: "User updated successfully", user });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("internal server error...");
+    }
+}
+
+
+
+
+
+
+
+
+
