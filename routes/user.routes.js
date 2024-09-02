@@ -1,13 +1,19 @@
+
 const express = require('express');
 const userRoutes = express.Router();
 
 const {
-    specialUser,
-    getAll,    
-} = require('../controller/user.controller');
+    addNewuser,
+    getAllusers,
+    getSingleuser
+} = require('../controller/user.controller')
 
-userRoutes.get("/all" , getAll );
+userRoutes.get("/add", addNewuser);
 
-userRoutes.get("/special" , specialUser )
+userRoutes.get('/all',getAllusers);
+
+userRoutes.get('/single',getSingleuser);
 
 module.exports = userRoutes;
+
+
