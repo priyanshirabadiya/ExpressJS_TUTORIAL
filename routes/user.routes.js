@@ -22,6 +22,12 @@ const {
     deleteCart
 } = require('../controller/carts.controller');
 
+const { 
+    addNewOrder, 
+    cancelOrder
+} = require('../controller/order.controller');
+
+
 
 // routes.post("/add", addUser);
 
@@ -48,6 +54,12 @@ routes.put('/updatecart', verifyToken, updateCart);
 routes.get('/allcart', verifyToken, getAllCarts);
 
 routes.delete('/deletecart', verifyToken, deleteCart);
+
+// -------------------- order -------------------
+
+routes.get('/addorder' , verifyToken , addNewOrder );
+
+routes.delete('/cancelorder' , verifyToken , cancelOrder );
 
 
 
