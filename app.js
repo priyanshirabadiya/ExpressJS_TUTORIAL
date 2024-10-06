@@ -21,5 +21,3 @@ app.use("/user" , UserRouter );
 app.listen(1133, () => {
     console.log('Server start at http://localhost:1133');
 })
-
-

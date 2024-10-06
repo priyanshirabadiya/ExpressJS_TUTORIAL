@@ -41,7 +41,6 @@ exports.registerUser = async (req, res) => {
     }
 }
 
-
 exports.loginUser = async (req, res) => {
     try {
         let user = await User.findOne({ email: req.body.email, isDelete: false });

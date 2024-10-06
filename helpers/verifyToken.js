@@ -8,7 +8,7 @@ exports.verifyToken = async (req, res, next) => {
             return res.json({ message: "not authorized person" });
         }
         let token = authorization.split(" ")[1];
-        let { userId } = await jwt.verify(token, process.env.JWT_SECRETE);
+        let { userId } = await jwt.verify(token, process.env.JWT_SECRETE); 
         let user = await User.findOne({ _id: userId, isDelete: false });
         if (!user) {
             return res.json({ message: "user not found" });
