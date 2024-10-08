@@ -16,7 +16,7 @@ exports.addProduct = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.status(500).send("internal server error...");
+        res.status(500).send(Messages.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -26,6 +26,6 @@ exports.getAllproducts = async (req, res) => {
         res.send(products);
     } catch (err) {
         console.log(err);
-        res.status(500).send("internal server error...");
+        res.status(500).send(Messages.INTERNAL_SERVER_ERROR);
     }
 }

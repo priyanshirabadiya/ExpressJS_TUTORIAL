@@ -28,22 +28,19 @@ const {
 } = require('../controller/order.controller');
 
 
-
-// routes.post("/add", addUser);
-
 routes.get('/all', getallUsers);
 
 routes.put('/update', verifyToken, updateUser);
 
-routes.post('/register', registerUser)
+routes.post('/register', registerUser);
 
-routes.get('/login', loginUser)
+routes.get('/login', loginUser);
 
 // ------------------- product ----------------
 
-routes.post('/addproduct', addProduct)
+routes.post('/addproduct', addProduct); 
 
-routes.get('/allproduct', getAllproducts)
+routes.get('/allproduct', getAllproducts);
 
 // -------------------- cart ------------------
 
@@ -60,8 +57,6 @@ routes.delete('/deletecart', verifyToken, deleteCart);
 routes.get('/addorder' , verifyToken , addNewOrder );
 
 routes.delete('/cancelorder' , verifyToken , cancelOrder );
-
-
 
 module.exports = routes;
 

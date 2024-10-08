@@ -1,5 +1,6 @@
 const Order = require('../model/order.model');
 const Cart = require('../model/cart.model');
+const Messages = require('../helpers/messages');
 
 exports.addNewOrder = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ exports.addNewOrder = async (req, res) => {
         }).populate({ path: "productId" });
 
         if (carts.length === 0) {
-            return res.json({ message: "Your cart is empty.." });
+            return res.json({ message: Messages.EMPTY_CART });
         }
         // res.send(carts);
         let orderItems = carts.map((item) => ({
@@ -29,11 +30,11 @@ exports.addNewOrder = async (req, res) => {
             paidAmount: grandtotal
         })
         await Cart.updateMany({ user: req.user._id, isDelete: false }, { isDelete: true });
-        res.json({ message: "Order placed...", order });
+        res.json({ message: Messages.ORDER_PLACED, order });
 
     } catch (err) {
         console.log(err);
-        res.status(500).send("Internal Server error...");
+        res.status(500).send(Messages.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -41,20 +42,20 @@ exports.cancelOrder = async (req, res) => {
     try {
         let orderId = req.body._id;
         if (!orderId) {
-            return res.status(400).json({ message: "Order ID is required." });
+            return res.status(400).json({ message: Messages.ORDERID_REQ });
         }
 
         const order = await Order.findById(orderId);
         if (!order) {
-            return res.status(404).json({ message: "Order not found." });
+            return res.status(404).json({ message: Messages.ORDER_NOT_FOUND });
         }
 
         let deleteOrder = await Order.findByIdAndUpdate(orderId, { isDelete: true }, { new: true });
-        res.json({ message: "Your order has been cancelled...", deleteOrder });
+        res.json({ message: Messages.ORDER_CANCEL, deleteOrder });
 
     } catch (err) {
         console.log(err);
-        res.status(500).send("Internal Server error...");
+        res.status(500).send(Messages.INTERNAL_SERVER_ERROR);
     }
 }
 

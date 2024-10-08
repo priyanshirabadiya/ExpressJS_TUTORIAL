@@ -12,8 +12,8 @@ class UserServices {
             return false;
         }
     }
-    async fineOne(body) {
-        return await findOne(body);
+    async findOneUser(body) {
+        return await User.findOne(body);
     }
 };
 

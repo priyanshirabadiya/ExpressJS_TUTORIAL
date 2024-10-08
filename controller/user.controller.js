@@ -1,62 +1,50 @@
 const User = require('../model/user.model');
+const userService = require('../services/user.service');
+const Messages = require('../helpers/messages');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-// exports.addUser = async (req, res) => {
-//     try {
-//         let user = await User.findOne({ email: req.body.email, isDelete: false });
-//         if (user) {
-//             res.send("User already exist...");
-//         }
-//         user = await User.create(req.body);
-//         res.send({ user, message: "User added succesfully..." });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send("internal server error...");
-//     }
-// }
-
 exports.getallUsers = async (req, res) => {
     try {
-        let users = await User.find({ isDelete: false });
+        let users = await userService.findUsers({ isDelete: false });
         res.send(users);
     } catch (err) {
         console.log(err);
-        res.status(500).send("internal server error...");
+        res.status(500).send({ Messages: Messages.INTERNAL_SERVER_ERROR });
     }
 }
 
 exports.registerUser = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.body.email, isDelete: false });
+        let user = await userService.findOneUser({ email: req.body.email, isDelete: false });
         if (user) {
-            res.send("User already exist...");
+            return res.send({ message: Messages.ALREDY_EXIST_USER });
         }
         let hashpass = await bcrypt.hash(req.body.password, 10);
-        user = await User.create({ ...req.body, password: hashpass });
-        res.send({ user, message: "User added succesfully..." });
+        user = await userService.addNewUser({ ...req.body, password: hashpass });
+        res.send({ user, message: Messages.USER_REGISTER });
     } catch (err) {
         console.log(err);
-        res.status(500).send("internal server error...");
+        res.status(500).send({ Messages: Messages.INTERNAL_SERVER_ERROR });
     }
 }
 
 exports.loginUser = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.body.email, isDelete: false });
+        let user = await userService.findOneUser({ email: req.body.email, isDelete: false });
         if (!user) {
-            res.send({ message: "User not found..." });
+            return res.send({ message: Messages.NOT_FOUND });
         }
         let comparepassword = await bcrypt.compare(req.body.password, user.password);
         if (!comparepassword) {
-            res.send("Email or password is incorrect... ");
+            return res.send({ message: Messages.INCORRECT_PASS });
         }
         // Creating token for reach home page.
         let token = await jwt.sign({ userId: user._id }, process.env.JWT_SECRETE);
-        res.json({ message: "User login success...", token });
+        res.json({ message: Messages.USER_LOGIN, token });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: "Internal server error ..." });
+        res.status(500).send({ Messages: Messages.INTERNAL_SERVER_ERROR });
     }
 }
 
@@ -69,21 +57,13 @@ exports.updateUser = async (req, res) => {
             { new: true }
         )
         if (!user) {
-            return res.send("User not found...");
+            return res.send({ message: Messages.NOT_FOUND });
         }
-        res.json({ message: "User updated successfully", user });
+        res.json({ message: Messages.UPDATED_USER, user });
 
     } catch (err) {
         console.log(err);
-        res.status(500).send("internal server error...");
+        res.status(500).send({ Messages: Messages.INTERNAL_SERVER_ERROR });
     }
 }
-
-
-
-
-
-
-
-
 
